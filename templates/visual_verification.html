@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% set active_page = "dashboard" %}
+{% block title %}Asset Inspection | InsureAI{% endblock %}
+{% block page_title %}Deep Inspection Module{% endblock %}
+
+{% block content %}
+
+<!-- Breadcrumb / Back Navigation -->
+<div class="mb-4 animate-fade-in">
+    <a href="{{ url_for('dashboard') }}" class="btn-ghost" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+        <i class="fas fa-arrow-left"></i> Return to Repository
+    </a>
+</div>
+
+<div class="row g-4">
+    <!-- Left Side: Visual Viewer -->
+    <div class="col-lg-7 animate-fade-in" style="animation-delay: 0.1s;">
+        <div class="visual-container d-flex flex-column h-100">
+            <div class="panel-header" style="background: rgba(0,0,0,0.2);">
+                <div class="panel-title text-truncate">
+                    <i class="fas fa-file-pdf text-rose"></i> {{ doc.title }}
+                </div>
+                
+                <div class="d-flex gap-2 flex-shrink-0">
+                    <button class="btn-ghost px-2 py-1" style="font-size: 0.75rem;"><i class="fas fa-search-plus"></i></button>
+                    <button class="btn-ghost px-2 py-1" style="font-size: 0.75rem;"><i class="fas fa-search-minus"></i></button>
+                    <button class="btn-ghost px-2 py-1" style="font-size: 0.75rem;"><i class="fas fa-expand"></i></button>
+                </div>
+            </div>
+            
+            <div class="flex-grow-1 position-relative d-flex align-items-center justify-content-center bg-black bg-opacity-50 p-4 min-h-[500px]" style="min-height: 500px;">
+                <!-- Simulated overlay bounding boxes for OCR -->
+                <div class="position-absolute border border-success rounded" style="top: 20%; left: 30%; width: 40%; height: 8%; box-shadow: 0 0 10px rgba(16,185,129,0.3); background: rgba(16,185,129,0.05);">
+                    <span class="position-absolute bottom-100 start-0 text-success small fw-bold mb-1" style="font-size: 0.65rem; background: rgba(16,185,129,0.2); padding: 1px 4px; border-radius: 4px;">TEXT EXTRACTED</span>
+                </div>
+                <div class="position-absolute border border-warning rounded" style="top: 45%; left: 20%; width: 60%; height: 15%; box-shadow: 0 0 10px rgba(245,158,11,0.3); background: rgba(245,158,11,0.05);">
+                    <span class="position-absolute bottom-100 start-0 text-warning small fw-bold mb-1" style="font-size: 0.65rem; background: rgba(245,158,11,0.2); padding: 1px 4px; border-radius: 4px;">KEY DATA</span>
+                </div>
+                
+                <!-- Mock document preview image -->
+                <div class="text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-white rounded shadow-lg p-5" style="width: 380px; height: 500px; opacity: 0.8;">
+                        <div class="text-muted text-opacity-50 text-center">
+                            <i class="fas fa-file-image mb-3" style="font-size: 4rem;"></i>
+                            <div class="fw-bold fs-5">Encrypted Payload View</div>
+                            <div class="small mt-2" style="font-family: monospace;">{{ doc.file_size }} | {{ doc.extension }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scanning HUD Overlay -->
+                <div class="position-absolute top-0 start-0 w-100 h-100 pointer-events-none" style="pointer-events: none;">
+                    <div class="scan-beam active"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side: AI Analysis & Verification Form -->
+    <div class="col-lg-5 animate-fade-in" style="animation-delay: 0.2s;">
+        
+        <!-- Overall Status Card -->
+        <div class="panel-card mb-4">
+            <div class="panel-body p-4">
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div>
+                        <h6 class="text-white fw-bold mb-1">Neural Verification Status</h6>
+                        <p class="text-muted small mb-0">Engine confidence threshold analysis</p>
+                    </div>
+                    
+                    {% if doc.summary_status in ['CONFORME', 'VERIFIED'] %}
+                    <div class="doc-type-icon text-emerald" style="background: rgba(16,185,129,0.1);"><i class="fas fa-shield-check"></i></div>
+                    {% elif doc.summary_status in ['FAKE', 'REJECTED'] %}
+                    <div class="doc-type-icon text-rose" style="background: rgba(244,63,94,0.1);"><i class="fas fa-shield-xmark"></i></div>
+                    {% else %}
+                    <div class="doc-type-icon text-amber" style="background: rgba(245,158,11,0.1);"><i class="fas fa-shield-exclamation"></i></div>
+                    {% endif %}
+                </div>
+                
+                <div class="d-flex align-items-end gap-2 mb-2">
+                    <span class="fw-black text-white" style="font-size: 2.5rem; line-height: 1; font-family: 'Outfit', sans-serif;">{{ doc.confidence_score }}%</span>
+                    <span class="text-muted small mb-1 fw-semibold">Confidence Rating</span>
+                </div>
+                
+                <div class="progress-dark mb-3" style="height: 6px;">
+                    {% if doc.summary_status in ['CONFORME', 'VERIFIED'] %}
+                    <div class="progress-bar" style="background: var(--emerald); width:{{ doc.confidence_score }}%;"></div>
+                    {% elif doc.summary_status in ['FAKE', 'REJECTED'] %}
+                    <div class="progress-bar" style="background: var(--rose); width:{{ doc.confidence_score }}%;"></div>
+                    {% else %}
+                    <div class="progress-bar" style="background: var(--amber); width:{{ doc.confidence_score }}%;"></div>
+                    {% endif %}
+                </div>
+                
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="pill-badge pill-indigo"><i class="fas fa-check"></i> OCR Scanned</span>
+                    <span class="pill-badge pill-indigo"><i class="fas fa-check"></i> Registry Checked</span>
+                    <span class="pill-badge pill-indigo"><i class="fas fa-check"></i> Anti-Spoof Passed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Extracted Data Panel -->
+        <div class="panel-card mb-4 d-flex flex-column" style="max-height: 380px;">
+            <div class="panel-header">
+                <div class="panel-title"><i class="fas fa-microchip text-cyan"></i> Extracted Payload Data</div>
+            </div>
+            <div class="panel-body flex-grow-1 overflow-auto custom-scrollbar" style="padding: 0;">
+                <div class="list-group list-group-flush">
+                    {% if doc.extracted_fields %}
+                        {% for key, value in doc.extracted_fields.items() %}
+                        <div class="list-group-item bg-transparent border-bottom px-4 py-3" style="border-color: var(--border) !important;">
+                            <div class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 0.5px;">{{ key }}</div>
+                            <div class="text-white fw-medium" style="font-size: 0.85rem; word-break: break-word;">{{ value }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="px-4 py-5 text-center text-muted">
+                            No structured data extracted.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Override Form -->
+        <div class="panel-card">
+            <div class="panel-header">
+                <div class="panel-title"><i class="fas fa-gavel text-amber"></i> Analyst Adjudication</div>
+            </div>
+            <div class="panel-body">
+                <p class="text-muted small mb-3">Override engine classification or confirm verification manually.</p>
+                
+                <div class="d-flex gap-2">
+                    <button class="btn-primary-glow flex-grow-1 justify-content-center bg-transparent border border-success text-success" onclick="updateStatus('{{ doc._id }}', 'VERIFIED')" onmouseover="this.style.background='rgba(16,185,129,0.1)'" onmouseout="this.style.background='transparent'">
+                        <i class="fas fa-check"></i> Approve
+                    </button>
+                    <button class="btn-primary-glow flex-grow-1 justify-content-center bg-transparent border border-danger text-danger" onclick="updateStatus('{{ doc._id }}', 'REJECTED')" onmouseover="this.style.background='rgba(244,63,94,0.1)'" onmouseout="this.style.background='transparent'">
+                        <i class="fas fa-times"></i> Reject
+                    </button>
+                    <button class="btn-ghost px-3" onclick="alert('Sent for higher tier underwriting review.')">
+                        <i class="fas fa-arrow-up"></i> Escalate
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function updateStatus(docId, newStatus) {
+    fetch(`/api/verify/${docId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if(data.success) {
+            window.location.reload();
+        }
+    })
+    .catch(err => alert("System offline. Verification update failed."));
+}
+
+// Add custom scrollbar for data panel
+document.head.insertAdjacentHTML("beforeend", `<style>
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-glow); border-radius: 10px; }
+</style>`)
+</script>
+{% endblock %}

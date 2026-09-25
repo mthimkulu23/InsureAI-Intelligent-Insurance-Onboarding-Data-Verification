@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}InsureAI - Digital Insurance Onboarding Platform{% endblock %}
+{% block page_title %}Digital Onboarding & Automated Document Verification{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm p-4 text-white" style="background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%); border-radius: 16px;">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <span class="badge bg-white text-indigo mb-2 fw-semibold px-3 py-2 rounded-pill">No Email Uploads Required</span>
+                    <h2 class="fw-bold mb-2">Automated Document Verification Command Center</h2>
+                    <p class="lead opacity-90 mb-4" style="font-size: 1.05rem;">
+                        Replace tedious manual document scans and email attachments with real-time AI parsing for 
+                        <strong>CIPC Documents</strong>, <strong>Certified ID Copies</strong>, <strong>FSP Licences</strong>, 
+                        <strong>Claims History</strong>, and <strong>Proof of Bank Account</strong>.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="{{ url_for('onboarding') }}" class="btn btn-light btn-lg px-4 fw-semibold text-primary rounded-pill">
+                            <i class="fas fa-file-upload me-2"></i> Start Client Onboarding
+                        </a>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-lg px-4 rounded-pill">
+                            <i class="fas fa-layer-group me-2"></i> View Documents Repository
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center d-none d-lg-block">
+                    <i class="fas fa-robot text-white opacity-25" style="font-size: 10rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- 5 Core Required Documents Cards -->
+    <div class="col-md-4">
+        <div class="stat-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="stat-icon bg-primary text-white">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0">CIPC Documents</h6>
+                    <small class="text-muted">Enterprise & Director Verification</small>
+                </div>
+            </div>
+            <p class="small text-secondary mb-0">Extracts enterprise registration numbers (CoR 14.3 / 15.1A), director lists, tax pins, and enterprise active standing.</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="stat-icon bg-success text-white">
+                    <i class="fas fa-id-card"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0">Certified ID Copies</h6>
+                    <small class="text-muted">SA ID Luhn Algorithm Validation</small>
+                </div>
+            </div>
+            <p class="small text-secondary mb-0">Parses 13-digit SA national ID numbers, DOB, gender, citizenship, and police certification stamp recency (< 3 months).</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="stat-icon bg-info text-white">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0">FSP Licence</h6>
+                    <small class="text-muted">FSCA Regulatory Standing</small>
+                </div>
+            </div>
+            <p class="small text-secondary mb-0">Validates Financial Services Provider licence number, authorized financial products, and jurisdiction registration letters.</p>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="stat-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="stat-icon bg-warning text-white">
+                    <i class="fas fa-file-contract"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0">Claims Experience Report</h6>
+                    <small class="text-muted">3-Year Underwriting History</small>
+                </div>
+            </div>
+            <p class="small text-secondary mb-0">Automates 3-year loss ratio calculations, claim counts, total claimed amounts, and flags unusual frequency anomalies.</p>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="stat-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="stat-icon bg-purple text-white" style="background:#7c3aed;">
+                    <i class="fas fa-university"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0">Proof of Bank Account</h6>
+                    <small class="text-muted">Bank Confirmation Letter Match</small>
+                </div>
+            </div>
+            <p class="small text-secondary mb-0">Verifies account holder name matching, bank stamp authenticity, branch codes, and date recency.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

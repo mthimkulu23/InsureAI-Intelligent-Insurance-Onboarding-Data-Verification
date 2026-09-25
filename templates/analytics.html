@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+{% set active_page = "analytics" %}
+{% block title %}Intelligence Pipeline | InsureAI{% endblock %}
+{% block page_title %}Analytics & Intelligence{% endblock %}
+
+{% block content %}
+
+<!-- ── Welcome Banner ──────────────────────────────────── -->
+<div class="hero-banner animate-fade-in" style="background: linear-gradient(135deg, #090e17 0%, #0f172a 50%, #1e1b4b 100%);">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <div class="hero-eyebrow" style="color: var(--cyan);">Intelligence Matrix</div>
+            <h3>Pipeline Analytics</h3>
+            <p>Real-time telemetry, verification throughput, and geographic risk distribution.</p>
+        </div>
+        <div class="text-end bg-black bg-opacity-25 rounded-3 p-3 border" style="border-color: rgba(255,255,255,0.1) !important;">
+            <div class="text-white opacity-50 small mb-1 text-uppercase tracking-wider">System Status</div>
+            <div class="fw-bold text-white d-flex align-items-center gap-2">
+                <div class="status-dot" style="background: var(--cyan); animation-duration: 1.5s;"></div> Live Telemetry
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Pipeline Funnel KPIs ────────────────────────────── -->
+<div class="d-flex align-items-center gap-2 mb-3 mt-4 animate-fade-in" style="animation-delay: 0.1s;">
+    <i class="fas fa-filter text-indigo-bright"></i>
+    <h6 class="fw-bold text-white mb-0">Onboarding Funnel</h6>
+</div>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 mb-5 animate-fade-in" style="animation-delay: 0.2s;">
+    <div class="col">
+        <div class="kpi-card h-100">
+            <div class="kpi-icon" style="background:rgba(99,102,241,0.12);color:var(--indigo-bright);"><i class="fas fa-users-viewfinder"></i></div>
+            <div class="kpi-value">{{ stats.total * 142 if stats else 10000 | default(10000) }}</div>
+            <div class="kpi-label">Prospects Identified</div>
+            <div class="kpi-sub text-muted">Raw Lead Ingestion</div>
+            <div class="mt-3">
+                <div class="progress-dark">
+                    <div class="progress-bar" style="width:100%; background:var(--indigo-bright);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col">
+        <div class="kpi-card kpi-cyan h-100">
+            <div class="kpi-icon" style="background:rgba(6,182,212,0.12);color:var(--cyan);"><i class="fas fa-file-signature"></i></div>
+            <div class="kpi-value" style="color:var(--cyan);">3.5k</div>
+            <div class="kpi-label">Applications Started</div>
+            <div class="kpi-sub text-muted">Intake Initiated</div>
+            <div class="mt-3">
+                <div class="progress-dark">
+                    <div class="progress-bar" style="width:35%; background:var(--cyan);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col">
+        <div class="kpi-card kpi-success h-100">
+            <div class="kpi-icon" style="background:rgba(16,185,129,0.12);color:var(--emerald);"><i class="fas fa-user-shield"></i></div>
+            <div class="kpi-value" style="color:var(--emerald);">{{ stats.verified if stats else 0 }}</div>
+            <div class="kpi-label">Fully Cleared</div>
+            <div class="kpi-sub text-muted">Identity Verified</div>
+            <div class="mt-3">
+                <div class="progress-dark">
+                    <div class="progress-bar" style="width:52%; background:var(--emerald);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col">
+        <div class="kpi-card kpi-warning h-100">
+            <div class="kpi-icon" style="background:rgba(245,158,11,0.12);color:var(--amber);"><i class="fas fa-graduation-cap"></i></div>
+            <div class="kpi-value" style="color:var(--amber);">1.26k</div>
+            <div class="kpi-label">Training Active</div>
+            <div class="kpi-sub text-muted">Compliance Modules</div>
+            <div class="mt-3">
+                <div class="progress-dark">
+                    <div class="progress-bar" style="width:36%; background:var(--amber);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Stage Turnaround Times ──────────────────────────── -->
+<div class="d-flex align-items-center gap-2 mb-3 mt-4 animate-fade-in" style="animation-delay: 0.3s;">
+    <i class="fas fa-stopwatch text-amber"></i>
+    <h6 class="fw-bold text-white mb-0">Velocity & Turnaround Matrix</h6>
+</div>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 mb-5 animate-fade-in" style="animation-delay: 0.4s;">
+    <div class="col">
+        <div class="panel-card h-100 p-4">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="doc-type-icon" style="background:rgba(99,102,241,0.1);color:var(--indigo-bright); width:38px; height:38px; font-size:1rem;">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="pill-badge pill-indigo">Phase 1</div>
+            </div>
+            <div class="text-white fw-bold mb-1">Document Ingestion</div>
+            <div class="d-flex align-items-end gap-2 mt-2">
+                <span style="font-size: 2.2rem; font-weight: 800; line-height: 1; color: var(--indigo-bright);">28</span>
+                <span class="text-muted small mb-1 fw-semibold">Days Avg</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col">
+        <div class="panel-card h-100 p-4">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="doc-type-icon" style="background:rgba(16,185,129,0.1);color:var(--emerald); width:38px; height:38px; font-size:1rem;">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="pill-badge pill-emerald">Phase 2</div>
+            </div>
+            <div class="text-white fw-bold mb-1">Neural Verification</div>
+            <div class="d-flex align-items-end gap-2 mt-2">
+                <span style="font-size: 2.2rem; font-weight: 800; line-height: 1; color: var(--emerald);">7</span>
+                <span class="text-muted small mb-1 fw-semibold">Days Avg</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col">
+        <div class="panel-card h-100 p-4">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="doc-type-icon" style="background:rgba(6,182,212,0.1);color:var(--cyan); width:38px; height:38px; font-size:1rem;">
+                    <i class="fas fa-search-dollar"></i>
+                </div>
+                <div class="pill-badge pill-cyan">Phase 3</div>
+            </div>
+            <div class="text-white fw-bold mb-1">Underwriting Review</div>
+            <div class="d-flex align-items-end gap-2 mt-2">
+                <span style="font-size: 2.2rem; font-weight: 800; line-height: 1; color: var(--cyan);">3</span>
+                <span class="text-muted small mb-1 fw-semibold">Days Avg</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col">
+        <div class="panel-card h-100 p-4">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="doc-type-icon" style="background:rgba(245,158,11,0.1);color:var(--amber); width:38px; height:38px; font-size:1rem;">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="pill-badge pill-amber">Phase 4</div>
+            </div>
+            <div class="text-white fw-bold mb-1">Activation & Binding</div>
+            <div class="d-flex align-items-end gap-2 mt-2">
+                <span style="font-size: 2.2rem; font-weight: 800; line-height: 1; color: var(--amber);">10</span>
+                <span class="text-muted small mb-1 fw-semibold">Days Avg</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Charts Row ──────────────────────────────────────── -->
+<div class="row g-4 animate-fade-in" style="animation-delay: 0.5s;">
+    <div class="col-lg-8">
+        <div class="chart-card">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h6 class="fw-bold text-white mb-1">Geographic Deployment</h6>
+                    <p class="text-muted small mb-0">Authorized node locations across regions</p>
+                </div>
+                <div class="pill-badge pill-indigo">Live Data</div>
+            </div>
+            <div style="height: 280px; position: relative;">
+                <canvas id="territoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="chart-card d-flex flex-column">
+            <div class="mb-4">
+                <h6 class="fw-bold text-white mb-1">Risk Profile Breakdown</h6>
+                <p class="text-muted small mb-0">Engine classification distribution</p>
+            </div>
+            
+            <div style="height: 180px; position: relative; margin-bottom: 1.5rem;">
+                <canvas id="riskPieChart"></canvas>
+            </div>
+            
+            <div class="mt-auto d-flex flex-column gap-3 bg-black bg-opacity-25 p-3 rounded-3 border" style="border-color: rgba(255,255,255,0.05) !important;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle" style="width:10px; height:10px; background:var(--emerald); box-shadow: 0 0 8px var(--emerald);"></div>
+                        <span class="text-white small fw-medium">Cleared Nodes</span>
+                    </div>
+                    <span class="fw-bold text-white">{{ stats.verified if stats else 5 }}</span>
+                </div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle" style="width:10px; height:10px; background:var(--amber); box-shadow: 0 0 8px var(--amber);"></div>
+                        <span class="text-white small fw-medium">Processing Queue</span>
+                    </div>
+                    <span class="fw-bold text-white">{{ stats.pending if stats else 0 }}</span>
+                </div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle" style="width:10px; height:10px; background:var(--rose); box-shadow: 0 0 8px var(--rose);"></div>
+                        <span class="text-white small fw-medium">Anomalous / Rejected</span>
+                    </div>
+                    <span class="fw-bold text-white">{{ stats.failed if stats else 0 }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Configure Chart.js defaults for dark theme
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.scale.grid.color = 'rgba(99,120,200,0.1)';
+Chart.defaults.scale.grid.borderColor = 'transparent';
+
+document.addEventListener('DOMContentLoaded', () => {
+    const ctx1 = document.getElementById('territoryChart');
+    if (ctx1) {
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Gauteng', 'Western Cape', 'KwaZulu-Natal', 'Eastern Cape', 'Free State', 'Limpopo'],
+                datasets: [{
+                    label: 'Active Nodes',
+                    data: [1420, 980, 750, 420, 310, 180],
+                    backgroundColor: [
+                        '#818cf8', // indigo-bright
+                        '#6366f1', // indigo
+                        '#06b6d4', // cyan
+                        '#10b981', // emerald
+                        '#f59e0b', // amber
+                        '#7c3aed'  // violet
+                    ],
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15,22,40,0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        borderColor: 'rgba(99,102,241,0.3)',
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    y: { border: { display: false } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+    
+    const ctx2 = document.getElementById('riskPieChart');
+    if (ctx2) {
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Cleared', 'Processing', 'Anomalous'],
+                datasets: [{
+                    data: [{{ stats.verified if stats else 5 }}, {{ stats.pending if stats else 0 }}, {{ stats.failed if stats else 0 }}],
+                    backgroundColor: ['#10b981', '#f59e0b', '#f43f5e'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15,22,40,0.95)',
+                        borderColor: 'rgba(99,102,241,0.3)',
+                        borderWidth: 1
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

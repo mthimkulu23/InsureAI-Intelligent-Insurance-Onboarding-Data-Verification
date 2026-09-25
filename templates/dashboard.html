@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% set active_page = "dashboard" %}
+{% block title %}Repository | InsureAI{% endblock %}
+{% block page_title %}Verification Command Centre{% endblock %}
+
+{% block content %}
+
+<!-- ── Welcome Banner ──────────────────────────────────── -->
+<div class="hero-banner animate-fade-in">
+    <div class="hero-eyebrow">Neural Processing Active</div>
+    <h3>Document Intelligence Repository</h3>
+    <p>All uploaded documents undergo rigorous AI-powered OCR, biometric identity validation, and cross-registry compliance checks.</p>
+    
+    <div class="mt-4">
+        <a href="{{ url_for('onboarding') }}" class="btn-primary-glow">
+            <i class="fas fa-fingerprint"></i> Initialize New Verification
+        </a>
+    </div>
+</div>
+
+<!-- ── KPI Summary Row ─────────────────────────────────── -->
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-5 g-4 mb-5 animate-fade-in" style="animation-delay: 0.1s;">
+    
+    <div class="col">
+        <div class="kpi-card h-100">
+            <div class="kpi-icon" style="background: rgba(99,102,241,0.12); color: var(--indigo-bright);">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="kpi-value">{{ stats.total if stats else 0 }}</div>
+            <div class="kpi-label">Total Processed</div>
+            <div class="kpi-sub text-muted">All Time</div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="kpi-card kpi-success h-100">
+            <div class="kpi-icon" style="background: rgba(16,185,129,0.12); color: var(--emerald);">
+                <i class="fas fa-shield-check"></i>
+            </div>
+            <div class="kpi-value" style="color: var(--emerald);">{{ stats.verified if stats else 0 }}</div>
+            <div class="kpi-label">Verified Trust</div>
+            <div class="kpi-sub" style="color: var(--emerald);">Cleared & Secured</div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="kpi-card kpi-danger h-100">
+            <div class="kpi-icon" style="background: rgba(244,63,94,0.12); color: var(--rose);">
+                <i class="fas fa-radar"></i>
+            </div>
+            <div class="kpi-value" style="color: var(--rose);">{{ stats.failed if stats else 0 }}</div>
+            <div class="kpi-label">Anomalies Detected</div>
+            <div class="kpi-sub" style="color: var(--rose);">Flagged for Review</div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="kpi-card kpi-warning h-100">
+            <div class="kpi-icon" style="background: rgba(245,158,11,0.12); color: var(--amber);">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="kpi-value" style="color: var(--amber);">{{ stats.pending if stats else 0 }}</div>
+            <div class="kpi-label">In Pipeline</div>
+            <div class="kpi-sub" style="color: var(--amber);">Awaiting Engine</div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="kpi-card kpi-cyan h-100">
+            <div class="kpi-icon" style="background: rgba(6,182,212,0.12); color: var(--cyan);">
+                <i class="fas fa-microchip"></i>
+            </div>
+            <div class="kpi-value" style="color: var(--cyan);">{{ stats.avg_confidence if stats else 100 }}%</div>
+            <div class="kpi-label">Avg AI Confidence</div>
+            <div class="kpi-sub" style="color: var(--cyan);">Prediction Accuracy</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ── Section Header ──────────────────────────────────── -->
+<div class="d-flex align-items-center justify-content-between mb-4 mt-2 animate-fade-in" style="animation-delay: 0.2s;">
+    <div>
+        <h5 class="fw-bold mb-1 text-white"><i class="fas fa-database text-indigo-bright me-2"></i>Verified Assets</h5>
+        <p class="text-muted mb-0 small">Select any asset to enter the deep-dive inspection module.</p>
+    </div>
+    {% if documents %}
+    <span class="pill-badge pill-indigo">
+        <i class="fas fa-file-alt"></i> {{ documents | length }} Asset{% if documents | length != 1 %}s{% endif %} Logged
+    </span>
+    {% endif %}
+</div>
+
+<!-- ── Document Cards Grid ─────────────────────────────── -->
+{% if documents %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 animate-fade-in" style="animation-delay: 0.3s;">
+    {% for doc in documents %}
+    <div class="col">
+        <div class="doc-card-v2 h-100">
+            
+            <!-- Card Top: Icon + Title + Status -->
+            <div class="doc-card-v2-top">
+                {% if doc.doc_type == 'id_copy' %}
+                <div class="doc-type-icon" style="background:rgba(99,102,241,0.1);color:var(--indigo-bright);">
+                    <i class="fas fa-id-card"></i>
+                </div>
+                {% elif doc.doc_type == 'cipc' %}
+                <div class="doc-type-icon" style="background:rgba(16,185,129,0.1);color:var(--emerald);">
+                    <i class="fas fa-building"></i>
+                </div>
+                {% elif doc.doc_type == 'fsp_licence' %}
+                <div class="doc-type-icon" style="background:rgba(245,158,11,0.1);color:var(--amber);">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                {% elif doc.doc_type == 'claims_report' %}
+                <div class="doc-type-icon" style="background:rgba(244,63,94,0.1);color:var(--rose);">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                {% else %}
+                <div class="doc-type-icon" style="background:rgba(6,182,212,0.1);color:var(--cyan);">
+                    <i class="fas fa-university"></i>
+                </div>
+                {% endif %}
+
+                <div class="flex-grow-1 min-w-0">
+                    <div class="fw-bold text-white mb-1 text-truncate" style="font-size:0.95rem; line-height:1.3;" title="{{ doc.title }}">
+                        {{ doc.title }}
+                    </div>
+                    <div class="text-muted" style="font-size: 0.75rem;">{{ doc.doc_type_label or doc.doc_type }}</div>
+                </div>
+
+                {% if doc.summary_status in ['CONFORME', 'VERIFIED'] %}
+                <span class="doc-status-badge status-verified flex-shrink-0">
+                    <i class="fas fa-check"></i> Valid
+                </span>
+                {% elif doc.summary_status in ['FAKE', 'REJECTED'] %}
+                <span class="doc-status-badge status-failed flex-shrink-0">
+                    <i class="fas fa-times"></i> Invalid
+                </span>
+                {% else %}
+                <span class="doc-status-badge status-pending flex-shrink-0">
+                    <i class="fas fa-spinner fa-spin"></i> Processing
+                </span>
+                {% endif %}
+            </div>
+
+            <div class="doc-divider"></div>
+
+            <!-- Card Middle: Metadata Grid -->
+            <div class="doc-meta-grid flex-grow-1">
+                <div class="doc-meta-item">
+                    <span class="doc-meta-label">File Ext</span>
+                    <span class="doc-meta-value">{{ doc.extension or 'PDF' }}</span>
+                </div>
+                <div class="doc-meta-item">
+                    <span class="doc-meta-label">Payload Size</span>
+                    <span class="doc-meta-value">{{ doc.file_size or '—' }}</span>
+                </div>
+                <div class="doc-meta-item">
+                    <span class="doc-meta-label">Ingested At</span>
+                    <span class="doc-meta-value" style="font-size: 0.75rem;">{{ doc.upload_date or '—' }}</span>
+                </div>
+                <div class="doc-meta-item">
+                    <span class="doc-meta-label">Asset ID</span>
+                    <span class="doc-meta-value" style="font-size: 0.75rem; font-family: monospace;">{{ (doc._id | string)[:8] }}</span>
+                </div>
+            </div>
+
+            <!-- Confidence Score Bar -->
+            <div class="conf-bar-wrap">
+                <div class="conf-bar-header">
+                    <span class="conf-bar-label"><i class="fas fa-brain me-1"></i> AI Confidence</span>
+                    {% if doc.summary_status in ['CONFORME', 'VERIFIED'] %}
+                    <span class="fw-bold" style="color: var(--emerald);">{{ doc.confidence_score }}%</span>
+                    {% elif doc.summary_status in ['FAKE', 'REJECTED'] %}
+                    <span class="fw-bold" style="color: var(--rose);">{{ doc.confidence_score }}%</span>
+                    {% else %}
+                    <span class="fw-bold" style="color: var(--amber);">{{ doc.confidence_score }}%</span>
+                    {% endif %}
+                </div>
+                <div class="progress-dark">
+                    {% if doc.summary_status in ['CONFORME', 'VERIFIED'] %}
+                    <div class="progress-bar" style="background: var(--emerald); width:{{ doc.confidence_score }}%;"></div>
+                    {% elif doc.summary_status in ['FAKE', 'REJECTED'] %}
+                    <div class="progress-bar" style="background: var(--rose); width:{{ doc.confidence_score }}%;"></div>
+                    {% else %}
+                    <div class="progress-bar" style="background: var(--amber); width:{{ doc.confidence_score }}%;"></div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Card Footer: CTA -->
+            <a href="{{ url_for('visual_verification', doc_id=doc._id) }}" class="doc-cta-btn">
+                <i class="fas fa-microscope"></i> Launch Deep Inspection
+            </a>
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<!-- Empty State -->
+<div class="empty-state animate-fade-in">
+    <div class="empty-state-icon">
+        <i class="fas fa-box-open"></i>
+    </div>
+    <h4 class="fw-bold text-white mb-2">Repository Empty</h4>
+    <p class="text-muted mb-4">Initialize the onboarding sequence to ingest and verify your first asset.</p>
+    <a href="{{ url_for('onboarding') }}" class="btn-primary-glow">
+        <i class="fas fa-satellite-dish"></i> Start Data Ingestion
+    </a>
+</div>
+{% endif %}
+
+{% endblock %}

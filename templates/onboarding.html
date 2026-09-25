@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% set active_page = "onboarding" %}
+{% block title %}Broker Portal | InsureAI{% endblock %}
+{% block page_title %}Secure Document Submission{% endblock %}
+
+{% block content %}
+
+<!-- ── Welcome Banner ──────────────────────────────────── -->
+<div class="hero-banner animate-fade-in mb-4" style="background: linear-gradient(135deg, #09090b 0%, #18181b 50%, #27272a 100%); border-color: rgba(255,255,255,0.1);">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <div class="hero-eyebrow" style="color: #a1a1aa;">Secure Broker Uplink</div>
+            <h3>Document & Identity Submission</h3>
+            <p>Upload documentation and complete the required biometric liveness check to submit your package to Linar.</p>
+        </div>
+        <div class="doc-type-icon text-white bg-black bg-opacity-50 border" style="border-color: rgba(255,255,255,0.1)!important; width: 56px; height: 56px; font-size: 1.5rem;">
+            <i class="fas fa-lock"></i>
+        </div>
+    </div>
+</div>
+
+<!-- ── Sequential Flow Container ───────────────────────── -->
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        
+        <!-- Wizard Progress -->
+        <div class="wizard-progress mt-2 mb-5 px-4 animate-fade-in">
+            <div class="wizard-progress-bar" id="wizardProgressBar" style="width: 0%;"></div>
+            
+            <div class="wizard-step-item active" id="stepItem1">
+                <div class="wizard-step-circle"><i class="fas fa-upload"></i></div>
+                <div class="wizard-step-label">Upload</div>
+            </div>
+            
+            <div class="wizard-step-item" id="stepItem2">
+                <div class="wizard-step-circle"><i class="fas fa-camera"></i></div>
+                <div class="wizard-step-label">Liveness Check</div>
+            </div>
+            
+            <div class="wizard-step-item" id="stepItem3">
+                <div class="wizard-step-circle"><i class="fas fa-check-double"></i></div>
+                <div class="wizard-step-label">Complete</div>
+            </div>
+        </div>
+
+        <!-- Phase 1: Upload Form -->
+        <div class="panel-card h-100 animate-fade-in" id="phase1Upload">
+            <div class="panel-header">
+                <div class="panel-title"><i class="fas fa-cloud-upload-alt text-indigo-bright"></i> Phase 1: Document Upload</div>
+            </div>
+            <form id="onboardingUploadForm" class="panel-body d-flex flex-column gap-4">
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="client_name" class="form-label-dark">Target Entity Name</label>
+                        <input type="text" class="form-control-dark" id="client_name" name="client_name" placeholder="Enter full legal name" required>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="doc_type" class="form-label-dark">Asset Classification</label>
+                        <select class="form-select-dark" id="doc_type" name="doc_type" required>
+                            <option value="id_copy">Identity Document (SA ID / Passport)</option>
+                            <option value="cipc" selected>CIPC Corporate Registry</option>
+                            <option value="fsp_licence">FSCA Licence Certificate</option>
+                            <option value="claims_report">Loss History / Claims Report</option>
+                            <option value="bank_proof">Bank Confirmation Letter</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label-dark">Asset Payload</label>
+                    <div class="dropzone-box" id="dropzone">
+                        <i class="fas fa-cloud-upload-alt dropzone-icon"></i>
+                        <h6 class="text-white fw-bold mb-2">Drag & Drop payload here</h6>
+                        <p class="text-muted small mb-3">Accepts PDF, PNG, JPG (Max 16MB)</p>
+                        <button type="button" class="btn-ghost" style="pointer-events: none;">
+                            <i class="fas fa-folder-open"></i> Browse Files
+                        </button>
+                        <input type="file" name="document" id="fileInput" class="d-none" accept=".pdf,.png,.jpg,.jpeg">
+                    </div>
+                </div>
+
+                <div id="uploadPreview" class="mt-2"></div>
+                
+                <div class="mt-2 pt-4 border-top" style="border-color: var(--border) !important;">
+                    <button type="button" id="btnSubmitUpload" class="btn-primary-glow w-100 d-flex justify-content-center py-3 fs-6">
+                        Submit & Proceed to Biometrics <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Phase 2: Biometric Scanner -->
+        <div class="panel-card h-100 animate-fade-in" id="phase2Biometric" style="display: none;">
+            <div class="panel-header border-bottom-0">
+                <div class="panel-title"><i class="fas fa-fingerprint text-cyan"></i> Phase 2: Biometric Liveness Validation</div>
+            </div>
+            
+            <div class="panel-body flex-grow-1 d-flex flex-column pt-0">
+                <p class="text-muted small mb-3 text-center">To securely bind this document to the submission, please prove you are physically present.</p>
+                
+                <!-- Camera Container -->
+                <div class="camera-container mx-auto position-relative" style="max-width: 640px; height: 480px; width: 100%;">
+                    <video id="biometricVideo" class="camera-video d-none" autoplay playsinline muted></video>
+                    
+                    <div id="cameraFallback">
+                        <div class="text-center">
+                            <i class="fas fa-video-slash text-muted mb-3" style="font-size: 3rem; opacity: 0.5;"></i>
+                            <h6 class="text-white fw-bold">Camera Offline</h6>
+                            <p class="text-muted small">Please allow camera access to proceed.</p>
+                            <button type="button" id="btnActivateCamera" class="btn-ghost mt-2 border-cyan text-cyan" onclick="startBiometricCamera()">
+                                <i class="fas fa-power-off"></i> Engage Camera
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- HUD Elements -->
+                    <div class="liveness-oval" style="display:none;" id="livenessOval"></div>
+                    <div class="scan-beam" id="biometricScanBeam"></div>
+                    <div class="face-mesh-hud" id="faceMeshHud"></div>
+
+                    <!-- HUD Status overlay inside camera -->
+                    <div class="position-absolute bottom-0 start-0 w-100 p-3" style="z-index: 10;">
+                        <div class="bg-black bg-opacity-75 rounded-3 p-3 border" style="border-color: rgba(6,182,212,0.3) !important;">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="text-cyan fw-bold small text-uppercase tracking-wider" id="hudStatusText"><i class="fas fa-info-circle"></i> Awaiting Camera</span>
+                                <span class="badge bg-danger rounded-pill px-2 py-1" id="biometricBadge" style="font-size: 0.65rem;">OFFLINE</span>
+                            </div>
+                            <div class="progress-dark mb-1" style="height: 4px;">
+                                <div class="progress-bar bg-cyan" id="hudStatusProgress" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="livenessStatusText" class="mt-4 text-center min-h-[80px]"></div>
+
+                <div class="d-flex justify-content-center gap-3 mt-4 pt-4 border-top" style="border-color: var(--border) !important;">
+                    <button type="button" class="btn-primary-glow px-5" id="startLivenessBtn" style="background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%);">
+                        <i class="fas fa-fingerprint me-2"></i> Start Live Scan
+                    </button>
+                    <button type="button" class="btn-success px-5 btn-primary-glow d-none" id="btnCompleteLiveness">
+                        Submit Final Package <i class="fas fa-check-double ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase 3: Success -->
+        <div class="panel-card h-100 animate-fade-in text-center p-5" id="phase3Success" style="display: none;">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4" style="width: 100px; height: 100px; background: rgba(16,185,129,0.1); color: var(--emerald); font-size: 3rem; box-shadow: 0 0 30px rgba(16,185,129,0.2);">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 class="text-white fw-bold mb-2">Submission Successful</h3>
+            <p class="text-muted mb-4">Your document and biometric signature have been securely encrypted and transmitted to Linar Underwriting.</p>
+            
+            <div class="p-3 rounded-3 border mb-4 text-start bg-black bg-opacity-25 mx-auto" style="max-width: 400px; border-color: var(--border) !important;">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted small">Reference ID:</span>
+                    <span class="text-white fw-medium font-monospace" id="successRefId">...</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted small">Status:</span>
+                    <span class="pill-badge pill-amber"><i class="fas fa-clock"></i> Pending Linar Review</span>
+                </div>
+            </div>
+
+            <button type="button" class="btn-ghost" onclick="window.location.reload()">
+                <i class="fas fa-plus"></i> Submit Another Document
+            </button>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/client_analyzer.js') }}"></script>
+<script src="{{ url_for('static', filename='js/wizard.js') }}"></script>
+{% endblock %}
